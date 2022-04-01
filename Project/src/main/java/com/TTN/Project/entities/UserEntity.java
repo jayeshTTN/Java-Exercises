@@ -1,5 +1,6 @@
 package com.TTN.Project.entities;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name ="user")
-public class UserEntity implements UserDetails {
+public class UserEntity implements UserDetails, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,14 +32,14 @@ public class UserEntity implements UserDetails {
     private String lastName;
     @Min(value = 6,message = "Password must be at least 6 characters")
     private String password;
-    @NotBlank(message = "Re-Enter your password")
-    private String rpassword;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     //@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> role;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Address address;
 
 
@@ -48,7 +50,6 @@ public class UserEntity implements UserDetails {
         this.middleName = middleName;
         this.lastName = lastName;
         this.password = password;
-        this.rpassword = rpassword;
         this.role = role;
     }
 
@@ -139,15 +140,6 @@ public class UserEntity implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getRpassword() {
-        return rpassword;
-    }
-
-    public void setRpassword(String rpassword) {
-        this.rpassword = rpassword;
-    }
-
 
     public Set<Role> getRole() {
         return role;

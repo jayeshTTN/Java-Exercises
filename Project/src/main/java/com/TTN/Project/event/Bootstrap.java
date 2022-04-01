@@ -30,7 +30,7 @@ public class Bootstrap implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         if(Objects.isNull(userRepo.findByEmail("admin@ttn.com"))) {
             Role role = new Role();
-            role.setAuthority("ROLE_ADMIN");
+            role.setName("ROLE_ADMIN");
             Role savedRole = roleRepo.save(role);
 
             Set<Role> roles = new HashSet<>();
@@ -43,7 +43,6 @@ public class Bootstrap implements ApplicationRunner {
             user.setMiddleName("jagdish");
             user.setLastName("gupta");
             user.setPassword(passwordEncoder.encode("admin"));
-            user.setRpassword("admin");
             user.setRole(roles);
             userRepo.save(user);
         }

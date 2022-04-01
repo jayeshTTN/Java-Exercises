@@ -31,9 +31,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 
         http.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET,"/","/user/**","/login")
+                .mvcMatchers(HttpMethod.GET,"/","/user/**","/current/user")
                 .hasAnyRole("USER","ADMIN")
-                .mvcMatchers(HttpMethod.POST,"/registerUser")
+                .mvcMatchers(HttpMethod.POST,"/registerUser","/register/customer")
                 .hasAnyRole("USER","ADMIN")
                 .anyRequest()
                 .denyAll()

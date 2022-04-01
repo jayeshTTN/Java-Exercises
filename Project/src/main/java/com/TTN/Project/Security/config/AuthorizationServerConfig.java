@@ -18,6 +18,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 
     private static final String RESOURCE_ID = "bootcamp";
+
     @Autowired
     private AuthenticationManager authenticationManager;
 

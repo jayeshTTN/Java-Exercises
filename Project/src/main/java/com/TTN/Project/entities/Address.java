@@ -1,10 +1,13 @@
 package com.TTN.Project.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Address {
+public class Address{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,6 +15,8 @@ public class Address {
 
 
     @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     private String city;

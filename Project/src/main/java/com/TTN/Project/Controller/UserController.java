@@ -2,8 +2,11 @@ package com.TTN.Project.Controller;
 
 import com.TTN.Project.Repository.UserRepo;
 import com.TTN.Project.Security.SecurityService;
+import com.TTN.Project.dtos.UserDTO;
 import com.TTN.Project.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,23 +31,36 @@ public class UserController {
 
 
     @GetMapping("/user/{user}")
-    public UserEntity getUser(@PathVariable String user) {
-        UserEntity userEntityFound = userRepo.findByFirstName(user);
-        return userEntityFound;
+    public UserDTO getUser(@PathVariable String user) {
+        UserEntity userFound = userRepo.findByEmail(user);
+        UserDTO dto=new UserDTO();
+        dto.setId(userFound.getId());
+        dto.setEmail(userFound.getEmail());
+        dto.setFirstName(userFound.getFirstName());
+        dto.setMiddleName(userFound.getMiddleName());
+        dto.setLastName(userFound.getLastName());
+        return dto;
     }
 
     @PostMapping("/registerUser")
-    public String register(@Valid @RequestBody UserEntity userEntity) {
+    public ResponseEntity<UserEntity> register(@Valid @RequestBody UserEntity userEntity) {
         userEntity.setPassword(encoder.encode(userEntity.getPassword()));
-        userRepo.save(userEntity);
-        return "successful";
+        UserEntity user = userRepo.save(userEntity);
+        return new ResponseEntity<UserEntity>(user, HttpStatus.CREATED);
     }
 
 
-    @GetMapping("/login")
-    public UserEntity printWelcome() {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
-        System.out.println("dsajhd");
-        return (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    @GetMapping("/current/user")
+    public UserDTO printWelcome() {
+       //System.out.println(">>>>>>>>>>>>"+SecurityContextHolder.getContext().getAuthentication());
+        UserEntity user =  (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userFound = userRepo.findByEmail(user.getEmail());
+        UserDTO dto=new UserDTO();
+        dto.setId(userFound.getId());
+        dto.setEmail(userFound.getEmail());
+        dto.setFirstName(userFound.getFirstName());
+        dto.setMiddleName(userFound.getMiddleName());
+        dto.setLastName(userFound.getLastName());
+        return dto;
     }
 }
