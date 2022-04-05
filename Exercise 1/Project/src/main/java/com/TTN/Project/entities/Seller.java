@@ -3,7 +3,6 @@ package com.TTN.Project.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 
 @Entity
 public class Seller {
@@ -16,10 +15,12 @@ public class Seller {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @Column(unique = true)
     @NotBlank(message = "Enter Your GST")
     private String gst;
     @NotBlank(message = "Enter Your Company Contact")
     private String companyContact;
+    @Column(unique = true)
     @NotBlank(message = "Enter Your Company Name")
     private String companyName;
 

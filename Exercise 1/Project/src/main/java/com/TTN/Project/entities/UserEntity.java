@@ -1,13 +1,11 @@
 package com.TTN.Project.entities;
 
-import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
@@ -37,7 +35,6 @@ public class UserEntity implements UserDetails, Serializable {
     private Set<Role> role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
     private Address address;
 
 
@@ -154,4 +151,6 @@ public class UserEntity implements UserDetails, Serializable {
     public void setAddress(Address address) {
         this.address = address;
     }
+
+
 }

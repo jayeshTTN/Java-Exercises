@@ -36,11 +36,6 @@ public class Bootstrap implements ApplicationRunner {
             Role role2 = new Role();
             role2.setName("ROLE_SELLER");
 
-            Set<Role> roles = new HashSet<>();
-            roles.add(role);
-            roles.add(role1);
-            roles.add(role2);
-
             roleRepo.save(role);
             roleRepo.save(role1);
             roleRepo.save(role2);

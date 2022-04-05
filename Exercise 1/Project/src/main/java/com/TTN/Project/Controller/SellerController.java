@@ -1,12 +1,14 @@
 package com.TTN.Project.Controller;
 
 
+import com.TTN.Project.Repository.AddressRepo;
 import com.TTN.Project.Repository.RoleRepo;
 import com.TTN.Project.Repository.SellerRepo;
 import com.TTN.Project.Repository.UserRepo;
 import com.TTN.Project.Security.SecurityService;
 import com.TTN.Project.dtos.seller.SellerDTO;
 import com.TTN.Project.dtos.seller.SellerResDTO;
+import com.TTN.Project.entities.Address;
 import com.TTN.Project.entities.Seller;
 import com.TTN.Project.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class SellerController {
     @Autowired
     SellerRepo sellerRepo;
 
+    @Autowired
+    AddressRepo addressRepo;
+
 
     @Autowired
     private SecurityService securityService;
@@ -41,6 +46,12 @@ public class SellerController {
 
     @PostMapping("/register")
     public ResponseEntity<SellerResDTO> register(@Valid @RequestBody SellerDTO sellerDTO) {
+
+        Seller seller = new Seller();
+        seller.setGst(sellerDTO.getGst());
+        seller.setCompanyContact(sellerDTO.getCompanyContact());
+        seller.setCompanyName(sellerDTO.getCompanyName());
+
         UserEntity user = new UserEntity();
         user.setEmail(sellerDTO.getEmail());
         user.setFirstName(sellerDTO.getFirstName());
@@ -48,17 +59,24 @@ public class SellerController {
         user.setLastName(sellerDTO.getLastName());
         user.setPassword(encoder.encode(sellerDTO.getPassword()));
         user.setRole(roleRepo.findByName("ROLE_SELLER"));
-        userRepo.save(user);
 
-        Seller seller = new Seller();
+        Address address = new Address();
+        address.setCity(sellerDTO.getAddressDTO().getCity());
+        address.setState(sellerDTO.getAddressDTO().getState());
+        address.setCountry(sellerDTO.getAddressDTO().getCountry());
+        address.setAddressLine(sellerDTO.getAddressDTO().getAddressLine());
+        address.setZipCode(sellerDTO.getAddressDTO().getZipCode());
+        user.setAddress(address);
+        address.setUser(user);
+
         seller.setUser(user);
-        seller.setGst(sellerDTO.getGst());
-        seller.setCompanyContact(sellerDTO.getCompanyContact());
-        seller.setCompanyName(sellerDTO.getCompanyName());
         sellerRepo.save(seller);
+        addressRepo.save(address);
+        userRepo.save(user);
 
         SellerResDTO sellerResDTO = new SellerResDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName());
 
         return new ResponseEntity<SellerResDTO>(sellerResDTO, HttpStatus.CREATED);
     }
+
 }

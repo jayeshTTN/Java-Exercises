@@ -20,42 +20,21 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        /*http.authorizeRequests()
-                .mvcMatchers("/user/**","/login")
-                .hasAnyRole("ADMIN")
-                .anyRequest()
-                .permitAll()
-                .and()
-                .csrf()
-                .disable();*/
-
 
         http.authorizeRequests()
                 .mvcMatchers(HttpMethod.GET,"/","/user/**","/current/user")
-                .hasAnyRole("USER","ADMIN","CUSTOMER")
-                .mvcMatchers(HttpMethod.POST,"/registerUser","/customer/register","/seller/register")
-                .hasAnyRole("USER","ADMIN")
-                .mvcMatchers(HttpMethod.GET,"/customer/profile")
+                .hasAnyRole("ADMIN","CUSTOMER","SELLER")
+                .mvcMatchers("/customer/register","/seller/register")
+                .permitAll()
+                .mvcMatchers("/customer/**")
                 .hasAnyRole("CUSTOMER")
+                .mvcMatchers("/seller/**")
+                .hasAnyRole("SELLER")
                 .anyRequest()
                 .denyAll()
                 .and()
                 .csrf()
                 .disable();
-
-
-
-
-
-
-
-
-//        http.authorizeRequests().mvcMatchers(HttpMethod.GET, "/couponapi/coupons/{code:^[A-Z]*$}")
-//                .hasAnyRole("USER", "ADMIN").
-//                mvcMatchers(HttpMethod.POST, "/couponapi/coupons").
-//                hasRole("ADMIN")
-//                .anyRequest().denyAll().and().csrf().disable();
-
     }
 
 

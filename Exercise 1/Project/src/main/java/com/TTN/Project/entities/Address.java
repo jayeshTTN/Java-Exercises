@@ -13,7 +13,6 @@ public class Address{
 
 
     @OneToOne(cascade = CascadeType.ALL)
-    @MapsId
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
@@ -22,6 +21,18 @@ public class Address{
     private String country;
     private String addressLine;
     private int zipCode;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 
     public UserEntity getUser() {
         return user;

@@ -1,9 +1,9 @@
 package com.TTN.Project.dtos.seller;
 
+import com.TTN.Project.dtos.AddressDTO;
+
 import javax.persistence.Column;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class SellerDTO {
     private Long id;
@@ -21,12 +21,25 @@ public class SellerDTO {
     private String password;
     @Size(min = 6,max = 12,message = "Password must be at least 6 characters")
     private String rpassword;
+    @Column(unique=true)
     @NotBlank(message = "Enter GST")
     private String gst;
     @NotBlank(message = "Enter Company Contact")
     private String companyContact;
+    @Column(unique=true)
     @NotBlank(message = "Enter Company Name")
     private String companyName;
+
+    @NotNull(message = "Enter Company Address")
+    private AddressDTO addressDTO;
+
+    public AddressDTO getAddressDTO() {
+        return addressDTO;
+    }
+
+    public void setAddressDTO(AddressDTO addressDTO) {
+        this.addressDTO = addressDTO;
+    }
 
     public Long getId() {
         return id;

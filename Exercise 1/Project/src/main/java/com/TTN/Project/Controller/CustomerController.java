@@ -1,6 +1,7 @@
 package com.TTN.Project.Controller;
 
 
+import com.TTN.Project.Repository.AddressRepo;
 import com.TTN.Project.Repository.CustomerRepo;
 import com.TTN.Project.Repository.RoleRepo;
 import com.TTN.Project.Repository.UserRepo;
@@ -33,6 +34,9 @@ public class CustomerController {
 
     @Autowired
     CustomerRepo customerRepo;
+
+    @Autowired
+    AddressRepo addressRepo;
 
 
     @Autowired
@@ -73,16 +77,31 @@ public class CustomerController {
     }
 
     @PostMapping("/address")
-    public AddressDTO addAddress(@RequestBody AddressDTO addressDTO){
+    public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO addressDTO){
         UserEntity user =  (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userFound = userRepo.findByEmail(user.getEmail());
         Address address = new Address();
         address.setCity(addressDTO.getCity());
         address.setState(addressDTO.getState());
         address.setCountry(addressDTO.getCountry());
         address.setAddressLine(addressDTO.getAddressLine());
         address.setZipCode(addressDTO.getZipCode());
-        user.setAddress(address);
-        return addressDTO;
+        userFound.setAddress(address);
+        address.setUser(userFound);
+        addressRepo.save(address);
+
+        return new ResponseEntity<AddressDTO>(addressDTO,HttpStatus.CREATED);
     }
+    @GetMapping("/address")
+    public ResponseEntity<AddressDTO> viewAddress(){
+        UserEntity user =  (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userFound = userRepo.findByEmail(user.getEmail());
+        Address address = userFound.getAddress();
+        AddressDTO addressDTO = new AddressDTO(address.getCity(),address.getState(),address.getCountry(), address.getAddressLine(), address.getZipCode());
+
+        return new ResponseEntity<AddressDTO>(addressDTO,HttpStatus.FOUND);
+    }
+
+
 
 }
