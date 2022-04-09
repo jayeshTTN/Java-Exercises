@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AddressRepo extends JpaRepository<Address, Long>{
 
+    Address findById(long id);
+    Address findByUserId(long id);
 }

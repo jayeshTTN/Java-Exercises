@@ -1,12 +1,9 @@
 package com.TTN.Project.entities;
 
 
-import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 
 @Entity
 public class Customer{
@@ -21,7 +18,7 @@ public class Customer{
     private UserEntity user;
 
     @NotBlank(message = "Enter Your Contact")
-    int contact;
+    String contact;
 
     public Long getId() {
         return id;
@@ -35,11 +32,11 @@ public class Customer{
         this.user = user;
     }
 
-    public int getContact() {
+    public String getContact() {
         return contact;
     }
 
-    public void setContact(int contact) {
+    public void setContact(String contact) {
         this.contact = contact;
     }
 

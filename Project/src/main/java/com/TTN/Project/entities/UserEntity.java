@@ -1,16 +1,13 @@
 package com.TTN.Project.entities;
 
-import org.codehaus.jackson.annotate.JsonBackReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 
@@ -30,7 +27,6 @@ public class UserEntity implements UserDetails, Serializable {
     private String middleName;
     @NotBlank(message = "Enter Last Name")
     private String lastName;
-    @Min(value = 6,message = "Password must be at least 6 characters")
     private String password;
 
 
@@ -39,7 +35,6 @@ public class UserEntity implements UserDetails, Serializable {
     private Set<Role> role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
     private Address address;
 
 
@@ -156,4 +151,6 @@ public class UserEntity implements UserDetails, Serializable {
     public void setAddress(Address address) {
         this.address = address;
     }
+
+
 }

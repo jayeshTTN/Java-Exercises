@@ -1,5 +1,6 @@
 package com.TTN.Project.entities;
 
+import com.TTN.Project.Enum.RoleEnum;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +15,10 @@ public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Column(unique = true)
+    @Enumerated(EnumType.STRING)
+    private RoleEnum name;
 
     @ManyToMany(mappedBy = "role")
     private Set<UserEntity> users;
@@ -23,11 +27,11 @@ public class Role implements GrantedAuthority {
 
     public void setId(Long id) {this.id = id;}
 
-    public String getName() {
+    public RoleEnum getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(RoleEnum name) {
         this.name = name;
     }
 
@@ -41,6 +45,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return name;
+        return String.valueOf(name);
     }
 }

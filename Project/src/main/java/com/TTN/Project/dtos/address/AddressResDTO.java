@@ -1,31 +1,27 @@
-package com.TTN.Project.entities;
-
-
+package com.TTN.Project.dtos.address;
 
 import com.TTN.Project.Enum.LabelEnum;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
-@Entity
-public class Address{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AddressResDTO {
     private long id;
-
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
     private String city;
     private String state;
     private String country;
     private String addressLine;
     private String zipCode;
-
-    @Enumerated(EnumType.STRING)
     private LabelEnum label;
+
+    public AddressResDTO(long id, String city, String state, String country, String addressLine, String zipCode, LabelEnum label) {
+        this.id = id;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.addressLine = addressLine;
+        this.zipCode = zipCode;
+        this.label = label;
+    }
 
     public long getId() {
         return id;
@@ -33,14 +29,6 @@ public class Address{
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public UserEntity getUser() {
-        return user;
     }
 
     public String getCity() {
@@ -91,4 +79,3 @@ public class Address{
         this.label = label;
     }
 }
-

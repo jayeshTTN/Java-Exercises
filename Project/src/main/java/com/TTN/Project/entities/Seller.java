@@ -1,9 +1,10 @@
 package com.TTN.Project.entities;
 
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 
 @Entity
 public class Seller {
@@ -11,15 +12,18 @@ public class Seller {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne(optional = false)
-    @MapsId("id")
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
+
+    @Column(unique = true)
     @NotBlank(message = "Enter Your GST")
     private String gst;
     @NotBlank(message = "Enter Your Company Contact")
-    private int companyContact;
+    private String companyContact;
+    @Column(unique = true)
     @NotBlank(message = "Enter Your Company Name")
     private String companyName;
 
@@ -47,11 +51,12 @@ public class Seller {
         this.gst = gst;
     }
 
-    public int getCompanyContact() {
+
+    public String getCompanyContact() {
         return companyContact;
     }
 
-    public void setCompanyContact(int companyContact) {
+    public void setCompanyContact(String companyContact) {
         this.companyContact = companyContact;
     }
 
