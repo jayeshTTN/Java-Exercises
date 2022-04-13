@@ -53,6 +53,18 @@ public class CustomizedExceptionHandler
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ResourceAlreadyExistException.class)
+    public final ResponseEntity<Object> resourceAlreadyExist(ResourceAlreadyExistException ex, WebRequest request){
+        List<String> list = new ArrayList<String>(Arrays.asList(ex.getMessage(),request.getDescription(false)));
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), "Resource already Exist", HttpStatus.BAD_REQUEST,list);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ResourceDoesNotExistException.class)
+    public final ResponseEntity<Object> resourceDoesNotExist(ResourceDoesNotExistException ex, WebRequest request){
+        List<String> list = new ArrayList<String>(Arrays.asList(ex.getMessage(),request.getDescription(false)));
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), "Resource does not Exist", HttpStatus.BAD_REQUEST,list);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(

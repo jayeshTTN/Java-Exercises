@@ -14,7 +14,7 @@ public class Category {
     @Column(unique=true)
     @NotBlank(message = "Enter Your Category name")
     private String  name;
-    private long parentCategory;
+    private long parentId;
 
 
     @OneToMany(mappedBy = "category")
@@ -39,12 +39,12 @@ public class Category {
         this.name = name;
     }
 
-    public long getParentCategory() {
-        return parentCategory;
+    public long getParentId() {
+        return parentId;
     }
 
-    public void setParentCategory(long parentCategory) {
-        this.parentCategory = parentCategory;
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 
 }

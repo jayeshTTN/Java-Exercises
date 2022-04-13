@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CustomerDTO {
-    private Long id;
     @Column(unique=true)
     @NotBlank(message = "Enter Your email")
     @Email(message = "Enter a Valid email Address ")
@@ -23,7 +22,7 @@ public class CustomerDTO {
     private String password;
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,15}",message ="8-15 Characters with at least 1 Lower case, 1 Upper case, 1 Special Character, 1 Number" )
     private String rpassword;
-    @Size(min = 10,max = 10,message = "contact : Enter your contact Number")
+    @Size(min = 10,max = 10,message = "Enter your contact Number")
     @NotBlank(message = "Enter Contact Details")
     private String contact;
 
@@ -32,13 +31,6 @@ public class CustomerDTO {
 
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getEmail() {
         return email;
