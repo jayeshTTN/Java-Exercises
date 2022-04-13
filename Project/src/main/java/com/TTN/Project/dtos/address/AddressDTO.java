@@ -6,6 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class AddressDTO {
     @NotBlank(message = "Enter City")
@@ -18,7 +19,7 @@ public class AddressDTO {
     private String addressLine;
     @NotBlank(message = "Enter Zip Code")
     private String zipCode;
-
+    @NotNull(message = "Label Cannot empty")
     @Enumerated(EnumType.STRING)
     private LabelEnum label;
 

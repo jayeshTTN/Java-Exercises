@@ -22,7 +22,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET,"/","/user/**","/current/user")
+                .mvcMatchers(HttpMethod.GET,"/","/user/**")
                 .hasAnyRole("ADMIN","CUSTOMER","SELLER")
                 .mvcMatchers("/customer/register","/seller/register")
                 .permitAll()
@@ -33,7 +33,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .mvcMatchers("/admin/**")
                 .hasAnyRole("ADMIN")
                 .anyRequest()
-                .denyAll()
+                .permitAll()
                 .and()
                 .csrf()
                 .disable();

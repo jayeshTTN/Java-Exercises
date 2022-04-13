@@ -26,8 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/seller")
@@ -53,12 +52,18 @@ public class SellerController {
 
     @PostMapping("/register")
     public ResponseEntity<SellerResDTO> register(@Valid @RequestBody SellerDTO sellerDTO) {
-        if(userRepo.findByEmail(sellerDTO.getEmail())!=null){
+        List<String> list = new ArrayList<>();
+        list.add(sellerDTO.getEmail());
+        list.add(sellerDTO.getCompanyName());
+        list.add(sellerDTO.getGst());
+        if(userRepo.findByEmail(sellerDTO.getEmail())!=null)
             throw new CustomerAlreadyExistException("Account already exist with Email :- "+sellerDTO.getEmail());
-        }
-        if (!sellerDTO.getPassword().equals(sellerDTO.getRpassword())){
+        if(sellerRepo.findByCompanyName(sellerDTO.getCompanyName())!=null)
+            throw new CustomerAlreadyExistException("Account already exist with Company Name :- "+sellerDTO.getCompanyName());
+        if(sellerRepo.findByGst(sellerDTO.getGst())!=null)
+            throw new CustomerAlreadyExistException("Account already exist with GST :- "+sellerDTO.getGst());
+        if (!sellerDTO.getPassword().equals(sellerDTO.getRpassword()))
             throw new PasswordMismatchException("Password Does Not Match");
-        }
         Seller seller = new Seller();
         seller.setGst(sellerDTO.getGst());
         seller.setCompanyContact(sellerDTO.getCompanyContact());
@@ -73,11 +78,12 @@ public class SellerController {
         user.setRole(roleRepo.findById(3));
 
         Address address = new Address();
-        address.setCity(sellerDTO.getAddressDTO().getCity());
-        address.setState(sellerDTO.getAddressDTO().getState());
-        address.setCountry(sellerDTO.getAddressDTO().getCountry());
-        address.setAddressLine(sellerDTO.getAddressDTO().getAddressLine());
-        address.setZipCode(sellerDTO.getAddressDTO().getZipCode());
+        address.setCity(sellerDTO.getCity());
+        address.setState(sellerDTO.getState());
+        address.setCountry(sellerDTO.getCountry());
+        address.setAddressLine(sellerDTO.getAddressLine());
+        address.setZipCode(sellerDTO.getZipCode());
+        address.setLabel(sellerDTO.getLabel());
         user.setAddress(address);
         address.setUser(user);
         addressRepo.save(address);
@@ -116,11 +122,8 @@ public class SellerController {
             System.out.println(">>>>>>"+field);
             ReflectionUtils.setField(field, user, v);
         });
-        try{
-            userRepo.save(user);
-        }catch (Exception ex){
-            throw new CustomerAlreadyExistException("Bad Request");
-        }
+        userRepo.save(user);
+
 
         Seller seller = sellerRepo.getOne(user.getId());
         SellerResDTO sellerResDTO = new SellerResDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName(),seller.getCompanyContact(),seller.getCompanyName(),seller.getGst());
@@ -166,5 +169,6 @@ public class SellerController {
         AddressResDTO addressResDTO = new AddressResDTO(address1.getId(),address1.getCity(),address1.getState(),address1.getCountry(),address1.getAddressLine(),address1.getZipCode(),address1.getLabel());
         return addressResDTO;
     }
+
 
 }

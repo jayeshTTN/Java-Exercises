@@ -19,11 +19,12 @@ public class CustomerDTO {
     private String middleName;
     @NotBlank(message = "Enter Last Name")
     private String lastName;
-    @Size(min = 6,max = 12,message = "password must be 6-12 characters")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,15}",message ="8-15 Characters with at least 1 Lower case, 1 Upper case, 1 Special Character, 1 Number" )
     private String password;
-    @Size(min = 6,max = 12,message = "password must be 6-12 characters")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,15}",message ="8-15 Characters with at least 1 Lower case, 1 Upper case, 1 Special Character, 1 Number" )
     private String rpassword;
-    @Size(min = 10,max = 10,message = "Enter your contact Number")
+    @Size(min = 10,max = 10,message = "contact : Enter your contact Number")
+    @NotBlank(message = "Enter Contact Details")
     private String contact;
 
     private Set<Role> role = new HashSet<>();

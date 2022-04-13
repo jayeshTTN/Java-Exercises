@@ -57,6 +57,7 @@ public class UserEntity implements UserDetails, Serializable {
         this.role = role;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role;

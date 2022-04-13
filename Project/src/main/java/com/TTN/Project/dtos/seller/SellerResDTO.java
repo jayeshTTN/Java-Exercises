@@ -1,8 +1,5 @@
 package com.TTN.Project.dtos.seller;
 
-import javax.persistence.Column;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 public class SellerResDTO {
     private Long id;

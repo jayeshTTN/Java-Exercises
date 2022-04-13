@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -46,7 +46,6 @@ public class CustomerController {
     @Autowired
     AddressRepo addressRepo;
 
-
     @Autowired
     private SecurityService securityService;
 
@@ -58,10 +57,7 @@ public class CustomerController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<CustomerResDTO> register(@Valid @RequestBody CustomerDTO customerDTO, BindingResult bindingResult)  {
-        if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors();
-        }
+    public ResponseEntity<CustomerResDTO> register(@Valid @RequestBody CustomerDTO customerDTO){
         if(userRepo.findByEmail(customerDTO.getEmail())!=null){
             throw new CustomerAlreadyExistException("Account already exist with Email :- "+customerDTO.getEmail());
         }
@@ -131,6 +127,12 @@ public class CustomerController {
         return addressResDTO;
     }
 
+    @DeleteMapping("/address/delete/{id}")
+    public String addressDelete(@PathVariable long id ){
+        addressRepo.deleteById(id);
+        return "Address is Deleted";
+    }
+
 
     @GetMapping("/profile/view")
     public CustomerResDTO viewProfile() {
@@ -172,6 +174,7 @@ public class CustomerController {
             return "password Changed Successfully for user :- "+user.getEmail();
         }
     }
+
 
 
 }
