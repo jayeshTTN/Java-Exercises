@@ -16,7 +16,7 @@ public class CategoryMetadataField {
     private String  name;
 
 
-    @OneToMany(mappedBy ="categoryMetadataField")
+    @OneToMany(mappedBy ="categoryMetadataField",cascade = CascadeType.ALL)
     private Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet = new HashSet<>();
 
     public long getId() {

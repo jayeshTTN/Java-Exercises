@@ -20,4 +20,12 @@ public class CategoryMetadataFieldValues implements Serializable{
 
     @JoinColumn(name = "value")
     private String value;
+
+
+    public CategoryMetadataFieldValues() {
+    }
+
+
+
+
 }

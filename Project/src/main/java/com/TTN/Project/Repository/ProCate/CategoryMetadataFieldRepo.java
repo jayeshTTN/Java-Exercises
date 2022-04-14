@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface CategoryMetadataFieldRepo extends JpaRepository<CategoryMetadataField,Long> {
     CategoryMetadataField findByName(String name);
+    CategoryMetadataField findById(long id);
     List<CategoryMetadataField> findAll(Sort sort);
 }

@@ -17,7 +17,7 @@ public class Category {
     private long parentId;
 
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
     private Set<CategoryMetadataFieldValues> categoryMetadataFieldValueSet = new HashSet<>();
 
 
