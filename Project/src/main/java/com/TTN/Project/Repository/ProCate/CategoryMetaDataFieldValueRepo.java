@@ -22,6 +22,12 @@ public interface CategoryMetaDataFieldValueRepo extends JpaRepository<CategoryMe
     @Query(value = "select * from category_metadata_field_values  where category_id=:id and category_metadata_field_id=:mid",nativeQuery = true)
     List<Object[]> viewMetadataValues2(@Param("id") long id, @Param("mid") long mid);
 
+
+    @Query(value = "select * from category_metadata_field_values",nativeQuery = true)
+    List<Object> viewAllMetadataValue();
+
+
+
     @Modifying
     @Query(value = "update category_metadata_field_values set value=:value where category_id=:id and category_metadata_field_id=:mid",nativeQuery = true)
     void updateMetadataValues(@Param("id") long id, @Param("mid") long mid,@Param("value") String value);

@@ -1,20 +1,40 @@
 package com.TTN.Project.Controller;
 
 
+import com.TTN.Project.Exception.InvalidTokenException;
+import com.TTN.Project.Exception.ResourceDoesNotExistException;
+import com.TTN.Project.Repository.CustomerRepo;
+import com.TTN.Project.Repository.TokenRepo;
+import com.TTN.Project.Repository.UserRepo;
 import com.TTN.Project.Security.SecurityService;
+import com.TTN.Project.Service.EmailService;
+import com.TTN.Project.dtos.customer.CustomerResDTO;
+import com.TTN.Project.entities.ConfirmationToken;
+import com.TTN.Project.entities.Customer;
+import com.TTN.Project.entities.UserEntity;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PublicController {
     @Autowired
     private SecurityService securityService;
 
-//    @PostMapping("/login")
-//    public String login(@RequestBody String email,@RequestBody String password) {
+    @Autowired
+    TokenRepo tokenRepository;
+
+    @Autowired
+    UserRepo userRepo;
+    @Autowired
+    CustomerRepo customerRepo;
+
+    @Autowired
+    private EmailService emailService;
+
 
     @PostMapping("/login")
     public String login(@RequestBody ObjectNode objectNode) {
@@ -26,5 +46,45 @@ public class PublicController {
             return "Successfully Logged in ";
         }
         return "Account does not exist wit email "+email;
+    }
+
+    @PutMapping(value = "customer/confirm")
+    public ResponseEntity<CustomerResDTO> confirmAccount(@RequestParam("token") String confirmationToken) throws InvalidTokenException {
+        ConfirmationToken token = tokenRepository.findByConfirmationToken(confirmationToken);
+        System.out.println(token.getUserEntity().getEmail());
+        if (token != null) {
+            UserEntity user = userRepo.findByEmail(token.getUserEntity().getEmail());
+            if (user == null) {
+                throw new InvalidTokenException("Invalid token");
+            }
+            user.setIs_active(true);
+            userRepo.save(user);
+            Customer customer = customerRepo.findByUserId(user.getId());
+            CustomerResDTO customerResDTO = new CustomerResDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName(),customer.getContact());
+
+            return new ResponseEntity<CustomerResDTO>(customerResDTO, HttpStatus.CREATED);
+        } else {
+            throw new InvalidTokenException("token cannot be null");
+        }
+    }
+
+
+    @PutMapping(value = "customer/resend/activation/{email}")
+    public ResponseEntity<CustomerResDTO> resendActivation(@PathVariable String email) {
+            UserEntity user = userRepo.findByEmail(email);
+            if (user == null) {
+                throw new ResourceDoesNotExistException("User Not found");
+            }
+            ConfirmationToken confirmationToken = new ConfirmationToken(user);
+            tokenRepository.save(confirmationToken);
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setSubject("Complete registration");
+            mailMessage.setText("To confirm your account, please click on the given link : "
+                    +"http://localhost:9092/customer/confirm?token="+confirmationToken.getConfirmationToken());
+            mailMessage.setTo(user.getEmail());
+            Customer customer = customerRepo.findByUserId(user.getId());
+            CustomerResDTO customerResDTO = new CustomerResDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName(),customer.getContact());
+            emailService.sendEmail(mailMessage);
+            return new ResponseEntity<CustomerResDTO>(customerResDTO, HttpStatus.OK);
     }
 }

@@ -27,7 +27,7 @@ public class Bootstrap implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if(Objects.isNull(userRepo.findByEmail("admin@ttn.com"))) {
+        if(Objects.isNull(roleRepo.findByAuthority(RoleEnum.ROLE_ADMIN))) {
             Role role = new Role();
             role.setName(RoleEnum.ROLE_ADMIN);
             Role role1 = new Role();
@@ -46,6 +46,10 @@ public class Bootstrap implements ApplicationRunner {
             user.setLastName("gupta");
             user.setPassword(passwordEncoder.encode("admin"));
             user.setRole(roleRepo.findById(1));
+            user.setIs_active(true);
+            user.setIs_deleted(false);
+            user.setIs_expired(false);
+            user.setIs_locked(false);
             userRepo.save(user);
 
         }

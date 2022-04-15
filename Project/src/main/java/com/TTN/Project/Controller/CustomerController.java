@@ -2,24 +2,25 @@ package com.TTN.Project.Controller;
 
 
 import com.TTN.Project.Exception.CustomerAlreadyExistException;
+import com.TTN.Project.Exception.InvalidTokenException;
 import com.TTN.Project.Exception.PasswordMismatchException;
-import com.TTN.Project.Repository.AddressRepo;
-import com.TTN.Project.Repository.CustomerRepo;
-import com.TTN.Project.Repository.RoleRepo;
-import com.TTN.Project.Repository.UserRepo;
+import com.TTN.Project.Repository.*;
 import com.TTN.Project.Security.SecurityService;
+import com.TTN.Project.Service.EmailService;
 import com.TTN.Project.dtos.PasswordDTO;
 import com.TTN.Project.dtos.address.AddressDTO;
 import com.TTN.Project.dtos.address.AddressResDTO;
 import com.TTN.Project.dtos.customer.CustomerDTO;
 import com.TTN.Project.dtos.customer.CustomerResDTO;
 import com.TTN.Project.entities.Address;
+import com.TTN.Project.entities.ConfirmationToken;
 import com.TTN.Project.entities.Customer;
 import com.TTN.Project.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,14 +51,18 @@ public class CustomerController {
     private SecurityService securityService;
 
     @Autowired
+    private EmailService emailService;
+    @Autowired
     private PasswordEncoder encoder;
 
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private TokenRepo tokenRepository;
 
     @PostMapping("/register")
-    public ResponseEntity<CustomerResDTO> register(@Valid @RequestBody CustomerDTO customerDTO){
+    public ResponseEntity<String> register(@Valid @RequestBody CustomerDTO customerDTO){
         if(userRepo.findByEmail(customerDTO.getEmail())!=null){
             throw new CustomerAlreadyExistException("Account already exist with Email :- "+customerDTO.getEmail());
         }
@@ -70,6 +75,7 @@ public class CustomerController {
         user.setMiddleName(customerDTO.getMiddleName());
         user.setLastName(customerDTO.getLastName());
         user.setPassword(encoder.encode(customerDTO.getPassword()));
+        user.setIs_active(false);
         user.setRole(roleRepo.findById(2));
 
         Customer customer = new Customer();
@@ -77,10 +83,18 @@ public class CustomerController {
         customer.setContact(customerDTO.getContact());
         customerRepo.save(customer);
 
-        CustomerResDTO customerResDTO = new CustomerResDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName(),customerDTO.getContact());
+        ConfirmationToken confirmationToken = new ConfirmationToken(user);
+        tokenRepository.save(confirmationToken);
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setSubject("Complete registration");
+        mailMessage.setText("To confirm your account, please click on the given link : "
+                +"http://localhost:9092/customer/confirm?token="+confirmationToken.getConfirmationToken());
+        mailMessage.setTo(user.getEmail());
 
-        return new ResponseEntity<CustomerResDTO>(customerResDTO, HttpStatus.CREATED);
+        emailService.sendEmail(mailMessage);
 
+        String str = "Account Created Please Click On link received on your Email to activate your account";
+        return new ResponseEntity<String>(str, HttpStatus.CREATED);
     }
 
 
@@ -174,7 +188,6 @@ public class CustomerController {
             return "password Changed Successfully for user :- "+user.getEmail();
         }
     }
-
 
 
 }

@@ -1,10 +1,11 @@
 package com.TTN.Project.Controller;
 
 
-import com.TTN.Project.Exception.ResourceAlreadyExistException;
 import com.TTN.Project.Repository.CustomerRepo;
 import com.TTN.Project.Repository.ProCate.CategoryMetadataFieldRepo;
 import com.TTN.Project.Repository.ProCate.CategoryRepo;
+import com.TTN.Project.Repository.SellerRepo;
+import com.TTN.Project.Service.AdminService;
 import com.TTN.Project.Service.CategoryService;
 import com.TTN.Project.dtos.category.CategoryDTO;
 import com.TTN.Project.dtos.category.CategoryFieldValueResDTO;
@@ -13,13 +14,15 @@ import com.TTN.Project.dtos.category.CategoryMetadataFieldValueDTO;
 import com.TTN.Project.entities.Customer;
 import com.TTN.Project.entities.ProCate.Category;
 import com.TTN.Project.entities.ProCate.CategoryMetadataField;
-import com.TTN.Project.entities.ProCate.CategoryMetadataFieldValues;
+import com.TTN.Project.entities.Seller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.sql.DataSource;
@@ -37,6 +40,12 @@ public class AdminController {
     CustomerRepo customerRepo;
 
     @Autowired
+    SellerRepo sellerRepo;
+
+    @Autowired
+    AdminService adminService;
+
+    @Autowired
     CategoryService categoryService;
 
     @Autowired
@@ -45,18 +54,54 @@ public class AdminController {
     @Autowired
     CategoryMetadataFieldRepo categoryMetadataFieldRepo;
 
-    @GetMapping("/get/customers")
+    @GetMapping("/getcustomers")
     public List<Customer> getCustomers() {
-
-        Pageable paging = PageRequest.of(0, 10, Sort.by("id"));
-
-        Page<Customer> pagedResult = customerRepo.findAll(paging);
-        if(pagedResult.hasContent()) {
-            return pagedResult.getContent();
-        } else {
-            return new ArrayList<Customer>();
-        }
+        List<Customer> customers = customerRepo.findAll();
+        return customers;
     }
+
+    @GetMapping("/getsellers")
+    public List<Seller> getSellers() {
+        List<Seller> sellers = sellerRepo.findAll();
+        return sellers;
+    }
+
+    @PutMapping("/activate-customer/{user}")
+    public ResponseEntity<String> activateCustomer(@PathVariable String user) {
+
+        if (adminService.activate(user)) {
+            return ResponseEntity.accepted().body("Customer activated");
+        }
+        return new ResponseEntity<>("customer not activated", HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/activate-seller/{user}")
+    public ResponseEntity<String> activateSeller(@PathVariable String user) {
+
+        if (adminService.activate(user)) {
+            return ResponseEntity.accepted().body("Seller activated");
+        }
+        return new ResponseEntity<>("seller not found", HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/deactivate-customer/{user}")
+    public ResponseEntity<String> deactivateCustomer(@PathVariable String user) {
+
+        if (adminService.deactivate(user)) {
+            return ResponseEntity.accepted().body("Customer deactivated");
+        }
+        return new ResponseEntity<>("customer not found", HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/deactivate-seller/{user}")
+    public ResponseEntity<String> deactivateSeller(@PathVariable String user) {
+
+        if (adminService.deactivate(user)) {
+            return ResponseEntity.accepted().body("Seller deactivated");
+        }
+        return new ResponseEntity<>("seller not found", HttpStatus.NOT_FOUND);
+    }
+
 
     //Categories
 

@@ -5,9 +5,10 @@ package com.TTN.Project.entities;
 import com.TTN.Project.Enum.LabelEnum;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Address{
+public class Address implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

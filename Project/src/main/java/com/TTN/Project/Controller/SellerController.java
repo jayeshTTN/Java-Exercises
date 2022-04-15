@@ -4,6 +4,9 @@ package com.TTN.Project.Controller;
 import com.TTN.Project.Exception.CustomerAlreadyExistException;
 import com.TTN.Project.Exception.PasswordMismatchException;
 import com.TTN.Project.Repository.AddressRepo;
+import com.TTN.Project.Repository.ProCate.CategoryMetaDataFieldValueRepo;
+import com.TTN.Project.Repository.ProCate.CategoryMetadataFieldRepo;
+import com.TTN.Project.Repository.ProCate.CategoryRepo;
 import com.TTN.Project.Repository.RoleRepo;
 import com.TTN.Project.Repository.SellerRepo;
 import com.TTN.Project.Repository.UserRepo;
@@ -14,9 +17,11 @@ import com.TTN.Project.dtos.address.AddressResDTO;
 import com.TTN.Project.dtos.seller.SellerDTO;
 import com.TTN.Project.dtos.seller.SellerResDTO;
 import com.TTN.Project.entities.Address;
+import com.TTN.Project.entities.ProCate.Category;
 import com.TTN.Project.entities.Seller;
 import com.TTN.Project.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +47,13 @@ public class SellerController {
 
     @Autowired
     AddressRepo addressRepo;
+
+    @Autowired
+    CategoryRepo categoryRepo;
+    @Autowired
+    CategoryMetadataFieldRepo fieldRepo;
+    @Autowired
+    CategoryMetaDataFieldValueRepo fieldValueRepo;
 
 
     @Autowired
@@ -170,5 +182,19 @@ public class SellerController {
         return addressResDTO;
     }
 
+
+
+    //Categories
+    @GetMapping("/category/view")
+    public Map<String,Object> getCategoryList() {
+        Map<String,Object> map =new HashMap<>();
+        Object object = categoryRepo.findAll(Sort.by("id"));
+        map.put("Categories",object);
+        Object object1 = fieldRepo.findAll(Sort.by("id"));
+        map.put("Fields",object1);
+        Object object2 = fieldValueRepo.viewAllMetadataValue();
+        map.put("Values",object2);
+        return map;
+    }
 
 }

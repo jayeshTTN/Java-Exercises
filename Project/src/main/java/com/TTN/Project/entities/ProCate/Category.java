@@ -21,8 +21,6 @@ public class Category {
     private Set<CategoryMetadataFieldValues> categoryMetadataFieldValueSet = new HashSet<>();
 
 
-
-
     public long getId() {
         return id;
     }

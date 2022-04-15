@@ -1,8 +1,14 @@
 package com.TTN.Project.Controller;
 
+import com.TTN.Project.Exception.InvalidTokenException;
+import com.TTN.Project.Repository.CustomerRepo;
+import com.TTN.Project.Repository.TokenRepo;
 import com.TTN.Project.Repository.UserRepo;
 import com.TTN.Project.Security.SecurityService;
 import com.TTN.Project.dtos.UserDTO;
+import com.TTN.Project.dtos.customer.CustomerResDTO;
+import com.TTN.Project.entities.ConfirmationToken;
+import com.TTN.Project.entities.Customer;
 import com.TTN.Project.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +27,8 @@ public class UserController {
 
     @Autowired
     UserRepo userRepo;
+
+
 
 
     @Autowired
@@ -48,6 +56,9 @@ public class UserController {
         UserEntity user = userRepo.save(userEntity);
         return new ResponseEntity<UserEntity>(user, HttpStatus.CREATED);
     }
+
+
+
 
 
     @GetMapping("/current/user")
