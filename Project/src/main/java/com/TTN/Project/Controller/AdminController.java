@@ -125,7 +125,7 @@ public class AdminController {
     }
 
 
-    @GetMapping("/category/view")
+    @GetMapping("/category/viewall")
     public List<Category> getCategoryList() {
         return categoryRepo.findAll(Sort.by("id"));
     }

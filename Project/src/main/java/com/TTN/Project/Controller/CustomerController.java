@@ -6,6 +6,7 @@ import com.TTN.Project.Exception.InvalidTokenException;
 import com.TTN.Project.Exception.PasswordMismatchException;
 import com.TTN.Project.Repository.*;
 import com.TTN.Project.Security.SecurityService;
+import com.TTN.Project.Service.CategoryService;
 import com.TTN.Project.Service.EmailService;
 import com.TTN.Project.dtos.PasswordDTO;
 import com.TTN.Project.dtos.address.AddressDTO;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -59,6 +61,8 @@ public class CustomerController {
     private UserDetailsService userDetailsService;
 
     @Autowired
+    CategoryService categoryService;
+    @Autowired
     private TokenRepo tokenRepository;
 
     @PostMapping("/register")
@@ -88,7 +92,7 @@ public class CustomerController {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setSubject("Complete registration");
         mailMessage.setText("To confirm your account, please click on the given link : "
-                +"http://localhost:9092/customer/confirm?token="+confirmationToken.getConfirmationToken());
+                +"http://localhost:9092/confirm/customer?token="+confirmationToken.getConfirmationToken());
         mailMessage.setTo(user.getEmail());
 
         emailService.sendEmail(mailMessage);
@@ -187,6 +191,12 @@ public class CustomerController {
             userRepo.save(user1);
             return "password Changed Successfully for user :- "+user.getEmail();
         }
+    }
+
+    //Categories
+    @GetMapping("/category/view")
+    public LinkedHashMap<String,Object> getCategoryList(){
+        return categoryService.getCategoryList();
     }
 
 

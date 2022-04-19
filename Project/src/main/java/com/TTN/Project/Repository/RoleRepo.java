@@ -12,7 +12,7 @@ public interface RoleRepo extends JpaRepository<Role,Long> {
 
     Set<Role> findById(long id);
 
-    public Role findByAuthority(RoleEnum roleEnum);
+    public Role findByName(RoleEnum roleEnum);
 
 
 

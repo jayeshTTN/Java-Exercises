@@ -11,6 +11,7 @@ import com.TTN.Project.Repository.RoleRepo;
 import com.TTN.Project.Repository.SellerRepo;
 import com.TTN.Project.Repository.UserRepo;
 import com.TTN.Project.Security.SecurityService;
+import com.TTN.Project.Service.CategoryService;
 import com.TTN.Project.dtos.PasswordDTO;
 import com.TTN.Project.dtos.address.AddressDTO;
 import com.TTN.Project.dtos.address.AddressResDTO;
@@ -49,11 +50,7 @@ public class SellerController {
     AddressRepo addressRepo;
 
     @Autowired
-    CategoryRepo categoryRepo;
-    @Autowired
-    CategoryMetadataFieldRepo fieldRepo;
-    @Autowired
-    CategoryMetaDataFieldValueRepo fieldValueRepo;
+    CategoryService categoryService;
 
 
     @Autowired
@@ -186,15 +183,8 @@ public class SellerController {
 
     //Categories
     @GetMapping("/category/view")
-    public Map<String,Object> getCategoryList() {
-        Map<String,Object> map =new HashMap<>();
-        Object object = categoryRepo.findAll(Sort.by("id"));
-        map.put("Categories",object);
-        Object object1 = fieldRepo.findAll(Sort.by("id"));
-        map.put("Fields",object1);
-        Object object2 = fieldValueRepo.viewAllMetadataValue();
-        map.put("Values",object2);
-        return map;
+    public LinkedHashMap<String,Object> getCategoryList(){
+        return categoryService.getCategoryList();
     }
 
 }

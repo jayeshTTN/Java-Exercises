@@ -48,7 +48,7 @@ public class PublicController {
         return "Account does not exist wit email "+email;
     }
 
-    @PutMapping(value = "customer/confirm")
+    @PutMapping(value = "/confirm/customer")
     public ResponseEntity<CustomerResDTO> confirmAccount(@RequestParam("token") String confirmationToken) throws InvalidTokenException {
         ConfirmationToken token = tokenRepository.findByConfirmationToken(confirmationToken);
         System.out.println(token.getUserEntity().getEmail());

@@ -7,8 +7,6 @@ import com.TTN.Project.Repository.UserRepo;
 import com.TTN.Project.Security.SecurityService;
 import com.TTN.Project.dtos.UserDTO;
 import com.TTN.Project.dtos.customer.CustomerResDTO;
-import com.TTN.Project.entities.ConfirmationToken;
-import com.TTN.Project.entities.Customer;
 import com.TTN.Project.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

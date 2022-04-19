@@ -10,6 +10,7 @@ import com.TTN.Project.dtos.category.CategoryMetadataFieldDTO;
 import com.TTN.Project.entities.ProCate.Category;
 import com.TTN.Project.entities.ProCate.CategoryMetadataField;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,6 +26,11 @@ public class CategoryService {
 
     @Autowired
     CategoryMetaDataFieldValueRepo categoryMetaDataFieldValueRepo;
+
+    @Autowired
+    CategoryMetadataFieldRepo fieldRepo;
+    @Autowired
+    CategoryMetaDataFieldValueRepo fieldValueRepo;
 
     public CategoryMetadataField addField(String name){
         if(categoryMetadataFieldRepo.findByName(name)==null){
@@ -67,12 +73,15 @@ public class CategoryService {
         Category category = categoryRepo.findById(id);
         if(category.getParentId()==0){
             map.put("Parent Category", Arrays.asList(category));
+            List<Category> childCat = categoryRepo.findAllByParentId(id);
+            map.put("Child Category",childCat);
         }
-        List<Category> childCat = categoryRepo.findAllByParentId(id);
         if (category.getParentId()!=0){
-            childCat.add(category);
+            Category category1 = categoryRepo.findById(category.getParentId());
+            map.put("Parent Category", Arrays.asList(category1));
+            List<Category> childCat = categoryRepo.findAllByParentId(category.getParentId());
+            map.put("Child Category",childCat);
         }
-        map.put("Child Category",childCat);
         return map;
     }
     public Category viewCategory(long id){
@@ -142,5 +151,16 @@ public class CategoryService {
         sb.deleteCharAt(sb.length()-1);
         categoryMetaDataFieldValueRepo.updateMetadataValues(id,mid,sb.toString());
         return new CategoryFieldValueResDTO(id,mid,sb.toString());
+    }
+
+    public LinkedHashMap<String,Object> getCategoryList() {
+        LinkedHashMap<String,Object> map =new LinkedHashMap<>();
+        Object object = categoryRepo.findAll(Sort.by("id"));
+        map.put("Categories",object);
+        Object object1 = fieldRepo.findAll(Sort.by("id"));
+        map.put("Fields",object1);
+        Object object2 = fieldValueRepo.viewAllMetadataValue();
+        map.put("Values",object2);
+        return map;
     }
 }
