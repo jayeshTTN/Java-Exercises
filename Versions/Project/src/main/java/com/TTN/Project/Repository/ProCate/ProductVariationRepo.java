@@ -13,4 +13,6 @@ public interface ProductVariationRepo extends JpaRepository<ProductVariation,Lon
 
     List<ProductVariation> findAllByProduct(Product product);
 
+    ProductVariation findById(long id);
+
 }
