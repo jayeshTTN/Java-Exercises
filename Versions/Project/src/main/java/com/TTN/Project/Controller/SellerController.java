@@ -7,9 +7,12 @@ import com.TTN.Project.Repository.RoleRepo;
 import com.TTN.Project.Repository.SellerRepo;
 import com.TTN.Project.Repository.UserRepo;
 import com.TTN.Project.Service.CategoryService;
+import com.TTN.Project.Service.ProductService;
 import com.TTN.Project.Service.SellerService;
 import com.TTN.Project.dtos.PasswordDTO;
 import com.TTN.Project.dtos.address.AddressResDTO;
+import com.TTN.Project.dtos.product.ProductDTO;
+import com.TTN.Project.dtos.product.ProductVariationDTO;
 import com.TTN.Project.dtos.seller.SellerDTO;
 import com.TTN.Project.dtos.seller.SellerResDTO;
 
@@ -24,27 +27,16 @@ import java.util.*;
 @RestController
 @RequestMapping("/seller")
 public class SellerController {
-    @Autowired
-    UserRepo userRepo;
-
-    @Autowired
-    RoleRepo roleRepo;
-
-    @Autowired
-    SellerRepo sellerRepo;
-
-    @Autowired
-    AddressRepo addressRepo;
 
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    ProductService productService;
 
     @Autowired
     private SellerService sellerService;
 
-    @Autowired
-    private PasswordEncoder encoder;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody SellerDTO sellerDTO) {
@@ -82,6 +74,18 @@ public class SellerController {
     @GetMapping("/category/view")
     public LinkedHashMap<String,Object> getCategoryList(){
         return categoryService.getCategoryList();
+    }
+
+
+    //Products
+    @PostMapping(value = "/product/add")
+    public ResponseEntity<String> addProduct(@Valid @RequestBody ProductDTO productDTO){
+        return productService.addProduct(productDTO);
+    }
+
+    @PostMapping(value = "/product/add-variation")
+    public ResponseEntity<String> addProductVariation(@Valid @RequestBody ProductVariationDTO productVariationDTO){
+        return productService.addProductVariation(productVariationDTO);
     }
 
 }

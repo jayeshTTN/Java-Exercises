@@ -1,10 +1,12 @@
 package com.TTN.Project.entities;
 
 
+import com.TTN.Project.entities.ProCate.Product;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Entity
 public class Seller {
@@ -26,6 +28,7 @@ public class Seller {
     @Column(unique = true)
     @NotBlank(message = "Enter Your Company Name")
     private String companyName;
+
 
     public Long getId() {
         return id;
