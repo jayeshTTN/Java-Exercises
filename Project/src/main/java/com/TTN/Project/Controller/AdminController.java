@@ -7,10 +7,12 @@ import com.TTN.Project.Repository.ProCate.CategoryRepo;
 import com.TTN.Project.Repository.SellerRepo;
 import com.TTN.Project.Service.AdminService;
 import com.TTN.Project.Service.CategoryService;
+import com.TTN.Project.Service.ProductService;
 import com.TTN.Project.dtos.category.CategoryDTO;
 import com.TTN.Project.dtos.category.CategoryFieldValueResDTO;
 import com.TTN.Project.dtos.category.CategoryMetadataFieldDTO;
 import com.TTN.Project.dtos.category.CategoryMetadataFieldValueDTO;
+import com.TTN.Project.dtos.product.ProductResDTO;
 import com.TTN.Project.entities.Customer;
 import com.TTN.Project.entities.ProCate.Category;
 import com.TTN.Project.entities.ProCate.CategoryMetadataField;
@@ -45,6 +47,9 @@ public class AdminController {
 
     @Autowired
     CategoryMetadataFieldRepo categoryMetadataFieldRepo;
+
+    @Autowired
+    ProductService productService;
 
     @GetMapping("/getcustomers")
     public List<Customer> getCustomers() {
@@ -143,5 +148,24 @@ public class AdminController {
         return categoryService.updateMetadataValue(metadataFieldValueDTO.getCategoryId(), metadataFieldValueDTO.getFieldId(),metadataFieldValueDTO.getValues());
     }
 
+    //product
+    @GetMapping("/product/view/{id}")
+    public ProductResDTO viewProductById(@PathVariable Long id){
+        return productService.viewProductById(id);
+    }
 
+    @GetMapping(value = "/product/view/all")
+    public List<ProductResDTO> viewAllProducts(){
+        return productService.viewAllProducts();
+    }
+
+    @PutMapping(value = "product/activate/{id}")
+    public ResponseEntity<String> activateProduct(@PathVariable long id) {
+        return adminService.activateProduct(id);
+    }
+
+    @PutMapping(value = "product/deactivate/{id}")
+    public ResponseEntity<String> deactivateProduct(@PathVariable long id) {
+        return adminService.deactivateProduct(id);
+    }
 }

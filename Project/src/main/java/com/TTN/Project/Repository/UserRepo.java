@@ -15,4 +15,6 @@ public interface UserRepo extends JpaRepository<UserEntity,Long> {
     @Modifying
     @Query(value = "update user set is_active=:flag where email =:email ",nativeQuery = true)
     void updateUser(@Param("email") String email,@Param("flag") boolean flag);
+
+    UserEntity findById(long id);
 }

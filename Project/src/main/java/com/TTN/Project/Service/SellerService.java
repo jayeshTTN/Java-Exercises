@@ -7,6 +7,7 @@ import com.TTN.Project.Security.SecurityService;
 import com.TTN.Project.dtos.PasswordDTO;
 import com.TTN.Project.dtos.address.AddressDTO;
 import com.TTN.Project.dtos.address.AddressResDTO;
+import com.TTN.Project.dtos.product.ProductResDTO;
 import com.TTN.Project.dtos.seller.SellerDTO;
 import com.TTN.Project.dtos.seller.SellerResDTO;
 import com.TTN.Project.entities.Address;
@@ -182,4 +183,5 @@ public class SellerService {
         AddressResDTO addressResDTO = new AddressResDTO(address1.getId(),address1.getCity(),address1.getState(),address1.getCountry(),address1.getAddressLine(),address1.getZipCode(),address1.getLabel());
         return addressResDTO;
     }
+
 }

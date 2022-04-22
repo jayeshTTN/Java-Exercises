@@ -3,11 +3,13 @@ package com.TTN.Project.Controller;
 
 import com.TTN.Project.Service.CategoryService;
 import com.TTN.Project.Service.CustomerService;
+import com.TTN.Project.Service.ProductService;
 import com.TTN.Project.dtos.PasswordDTO;
 import com.TTN.Project.dtos.address.AddressDTO;
 import com.TTN.Project.dtos.address.AddressResDTO;
 import com.TTN.Project.dtos.customer.CustomerDTO;
 import com.TTN.Project.dtos.customer.CustomerResDTO;
+import com.TTN.Project.dtos.product.ProductResDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,6 +27,8 @@ public class CustomerController {
     CategoryService categoryService;
     @Autowired
     CustomerService customerService;
+    @Autowired
+    ProductService productService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody CustomerDTO customerDTO){
@@ -71,4 +76,15 @@ public class CustomerController {
         return categoryService.getCategoryList();
     }
 
+
+    //product
+    @GetMapping("/product/view/{id}")
+    public ProductResDTO viewProductById(@PathVariable Long id){
+        return productService.viewProductById(id);
+    }
+
+    @GetMapping(value = "/product/view/all")
+    public List<ProductResDTO> viewAllProducts(){
+        return productService.viewAllProducts();
+    }
 }

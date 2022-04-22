@@ -20,7 +20,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.web.bind.annotation.*;
+
+import javax.sql.DataSource;
+import java.security.Principal;
+import java.util.Collection;
 
 
 @RestController
@@ -41,6 +51,9 @@ public class PublicController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    DataSource dataSource;
+
 
     @PostMapping("/login")
     public String login(@RequestBody ObjectNode objectNode) {
@@ -48,6 +61,8 @@ public class PublicController {
         String password = objectNode.get("password").asText();
 
         boolean loginResponse = securityService.login(email, password);
+
+
         if (loginResponse) {
             return "Successfully Logged in ";
         }
@@ -89,6 +104,12 @@ public class PublicController {
             Seller seller = sellerRepo.findByUserId(user.getId());
             SellerResDTO sellerResDTO = new SellerResDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName(),seller.getCompanyContact(),seller.getCompanyName(),seller.getGst());
 
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setSubject("Account Activation");
+            mailMessage.setText("Your Account is activated by admin");
+            mailMessage.setTo(user.getEmail());
+            emailService.sendEmail(mailMessage);
+
             return new ResponseEntity<SellerResDTO>(sellerResDTO, HttpStatus.CREATED);
         } else {
             throw new InvalidTokenException("token cannot be null");
@@ -114,4 +135,15 @@ public class PublicController {
             emailService.sendEmail(mailMessage);
             return new ResponseEntity<CustomerResDTO>(customerResDTO, HttpStatus.OK);
     }
+
+    @PostMapping(value = "/logout")
+    public String logout(Principal principal) {
+        JdbcTokenStore jdbcTokenStore = new JdbcTokenStore(dataSource);
+        OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
+        OAuth2AccessToken accessToken = jdbcTokenStore.getAccessToken(oAuth2Authentication);
+        jdbcTokenStore.removeAccessToken(accessToken.getValue());
+        jdbcTokenStore.removeRefreshToken(accessToken.getRefreshToken());
+        return "You have been LoggedOut";
+    }
 }
+
